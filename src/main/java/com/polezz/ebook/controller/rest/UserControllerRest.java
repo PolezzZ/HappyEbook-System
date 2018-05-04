@@ -24,7 +24,6 @@ import com.polezz.ebook.service.UserService;
  * @version 1.0.0, 2018年4月21日 下午2:48:26
  */
 @RestController
-//@RequestMapping("/users")
 public class UserControllerRest {
     @Autowired
     private UserService userService;
