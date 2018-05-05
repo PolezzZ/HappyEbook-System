@@ -13,10 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.polezz.ebook.mapper.UserMapper;
 import com.polezz.ebook.model.User;
 import com.polezz.ebook.service.UserService;
+import com.polezz.ebook.util.UUIDUtil;
 
 /**
  *
@@ -26,33 +30,48 @@ import com.polezz.ebook.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static AtomicLong counter = new AtomicLong(); 
-    private final ConcurrentMap<Long, User> userMap = new ConcurrentHashMap<>();
+    @Autowired
+    private UserMapper userMapper;
 
+    @Transactional
     @Override
     public User saveOrUpdateUser(User user) {
-        Long id = user.getUserId();
+        String id = user.getUserId();
         if(id == null) {
-            id = counter.incrementAndGet();
+            id = UUIDUtil.getUUID();
             user.setUserId(id);
         }
-        this.userMap.put(id, user);
+        userMapper.saveOrUpdateUser(user);
         return user;
     }
 
+    @Transactional
     @Override
-    public void deleteUser(Long userId) {
-        this.userMap.remove(userId);
+    public User registerUser(User user) {
+        String id = user.getUserId();
+        if(id == null) {
+            id = UUIDUtil.getUUID();
+            user.setUserId(id);
+        }
+        userMapper.saveOrUpdateUser(user);
+        return user;
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(String userId) {
+        userMapper.deleteUser(userId);
     }
 
     @Override
-    public User getUserById(Long userId) {
-        return this.userMap.get(userId);
+    public User getUserById(String userId) {
+        return userMapper.getUserById(userId);
     }
 
     @Override
-    public List<User> listUsers() {
-        return new ArrayList<User>(this.userMap.values());
+    public List<User> listUsersByNameLike(String name) {
+        name = "%"+name+"%";
+        return userMapper.listUsersByNameLike(name);
     }
 
 }

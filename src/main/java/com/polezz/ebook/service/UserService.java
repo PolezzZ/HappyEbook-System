@@ -19,25 +19,31 @@ import com.polezz.ebook.model.User;
  */
 public interface UserService {
     /**
-     * 创建或修改用户
+     * 新增或保存用户
      * @param user
      * @return
      */
     User saveOrUpdateUser(User user);
     /**
+     * 注册用户用户
+     * @param user
+     * @return
+     */
+    User registerUser(User user);
+    /**
      * 删除用户
      * @param userId
      */
-    void deleteUser(Long userId);
+    void deleteUser(String userId);
     /**
      * 根据userId查询用户
      * @param userId
      * @return
      */
-    User getUserById(Long userId);
+    User getUserById(String userId);
     /**
      * 获取用户列表
      * @return
      */
-    List<User> listUsers();
+    List<User> listUsersByNameLike(String name);
 }

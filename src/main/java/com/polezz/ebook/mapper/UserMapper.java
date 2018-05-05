@@ -30,16 +30,17 @@ public interface UserMapper {
      * 删除用户
      * @param userId
      */
-    void deleteUser(Long userId);
+    void deleteUser(String userId);
     /**
      * 根据userId查询用户
      * @param userId
      * @return
      */
-    User getUserById(Long userId);
+    User getUserById(String userId);
     /**
-     * 获取用户列表
+     * 
+     * @param name
      * @return
      */
-    List<User> listUsers();
+    List<User> listUsersByNameLike(String name);
 }

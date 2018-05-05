@@ -32,19 +32,6 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 查询所有用户
-     * 
-     * @param model
-     * @return
-     */
-    @GetMapping
-    public ModelAndView listUsers(Model model) {
-        model.addAttribute("userList", userService.listUsers());
-        model.addAttribute("title", "用戶管理");
-        return new ModelAndView("users/list", "userModel", model);
-    }
-
-    /**
      * 根据id查询用户
      * 
      * @param userId
@@ -52,7 +39,7 @@ public class UserController {
      * @return
      */
     @GetMapping("{userId}")
-    public ModelAndView view(@PathVariable("userId") Long userId, Model model) {
+    public ModelAndView view(@PathVariable("userId") String userId, Model model) {
         User user = userService.getUserById(userId);
         model.addAttribute("user", user);
         model.addAttribute("title", "查看用戶");
@@ -79,14 +66,14 @@ public class UserController {
     }
 
     @GetMapping("/deleteUser/{userId}")
-    public ModelAndView deleteUser(@PathVariable("userId") Long userId,
+    public ModelAndView deleteUser(@PathVariable("userId") String userId,
             Model model) {
         userService.deleteUser(userId);
         return new ModelAndView("redirect:/users");
     }
 
     @GetMapping("/updateUser/{userId}")
-    public ModelAndView updateUser(@PathVariable("userId") Long userId,
+    public ModelAndView updateUser(@PathVariable("userId") String userId,
             Model model) {
         User user = userService.getUserById(userId);
         model.addAttribute("user", user);

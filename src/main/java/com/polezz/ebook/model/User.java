@@ -16,21 +16,24 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Long userId;// 实体的唯一标识
+    private String userId;// 实体的唯一标识
     private String name;
     private String email;
+    private String username;
+    private String password;
+    private String avatar;
     public User() {
 
     }
-    public User(Long userId, String name, String email) {
+    public User(String userId, String name, String email) {
         this.userId = userId;
         this.name = name;
         this.email = email;
     }
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
     public String getName() {
@@ -45,10 +48,29 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getAvatar() {
+        return avatar;
+    }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
     @Override
     public String toString() {
         return "User [userId=" + userId + ", name=" + name + ", email=" + email
-                + "]";
+                + ", username=" + username + ", password=" + password
+                + ", avatar=" + avatar + "]";
     }
 
 }
