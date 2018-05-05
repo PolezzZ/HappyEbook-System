@@ -36,10 +36,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User saveOrUpdateUser(User user) {
-        String id = user.getUserId();
+        String id = user.getId();
         if(id == null) {
             id = UUIDUtil.getUUID();
-            user.setUserId(id);
+            user.setId(id);
         }
         userMapper.saveOrUpdateUser(user);
         return user;
@@ -48,10 +48,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User registerUser(User user) {
-        String id = user.getUserId();
+        String id = user.getId();
         if(id == null) {
             id = UUIDUtil.getUUID();
-            user.setUserId(id);
+            user.setId(id);
         }
         userMapper.saveOrUpdateUser(user);
         return user;
@@ -59,13 +59,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUser(String userId) {
-        userMapper.deleteUser(userId);
+    public void deleteUser(String id) {
+        userMapper.deleteUser(id);
     }
 
     @Override
-    public User getUserById(String userId) {
-        return userMapper.getUserById(userId);
+    public User getUserById(String id) {
+        return userMapper.getUserById(id);
     }
 
     @Override

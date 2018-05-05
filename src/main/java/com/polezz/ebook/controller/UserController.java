@@ -34,13 +34,13 @@ public class UserController {
     /**
      * 根据id查询用户
      * 
-     * @param userId
+     * @param id
      * @param model
      * @return
      */
-    @GetMapping("{userId}")
-    public ModelAndView view(@PathVariable("userId") String userId, Model model) {
-        User user = userService.getUserById(userId);
+    @GetMapping("{id}")
+    public ModelAndView view(@PathVariable("id") String id, Model model) {
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("title", "查看用戶");
         return new ModelAndView("users/view", "userModel", model);
@@ -65,17 +65,17 @@ public class UserController {
         return new ModelAndView("redirect:/users");
     }
 
-    @GetMapping("/deleteUser/{userId}")
-    public ModelAndView deleteUser(@PathVariable("userId") String userId,
+    @GetMapping("/deleteUser/{id}")
+    public ModelAndView deleteUser(@PathVariable("id") String id,
             Model model) {
-        userService.deleteUser(userId);
+        userService.deleteUser(id);
         return new ModelAndView("redirect:/users");
     }
 
-    @GetMapping("/updateUser/{userId}")
-    public ModelAndView updateUser(@PathVariable("userId") String userId,
+    @GetMapping("/updateUser/{id}")
+    public ModelAndView updateUser(@PathVariable("id") String id,
             Model model) {
-        User user = userService.getUserById(userId);
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("title", "修改用戶");
         return new ModelAndView("users/form", "userModel", model);

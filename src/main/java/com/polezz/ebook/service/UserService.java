@@ -32,15 +32,15 @@ public interface UserService {
     User registerUser(User user);
     /**
      * 删除用户
-     * @param userId
+     * @param id
      */
-    void deleteUser(String userId);
+    void deleteUser(String id);
     /**
-     * 根据userId查询用户
-     * @param userId
+     * 根据id查询用户
+     * @param id
      * @return
      */
-    User getUserById(String userId);
+    User getUserById(String id);
     /**
      * 获取用户列表
      * @return
