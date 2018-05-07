@@ -7,17 +7,35 @@
  */
 package com.polezz.ebook.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.polezz.ebook.model.Authority;
 import com.polezz.ebook.model.User;
+import com.polezz.ebook.service.AuthorityService;
 import com.polezz.ebook.service.UserService;
+import com.polezz.ebook.util.ConstraintViolationExceptionHandler;
+import com.polezz.ebook.vo.Response;
 
 /**
  * 用户控制器
@@ -25,59 +43,112 @@ import com.polezz.ebook.service.UserService;
  * @author PolezZ_ (polezz_z@163.com)
  * @version 1.0.0, 2018年5月3日 下午10:31:35
  */
-@Controller
+@RestController
 @RequestMapping("/users")
+@PreAuthorize("hasAuthority('ROLE_ADMIN')") // 指定角色权限才能操作方法
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthorityService authorityService;
+
+    @GetMapping
+    public ModelAndView list(
+            @RequestParam(value = "async", required = false) boolean async,
+            @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            Model model) {
+        @SuppressWarnings("deprecation")
+        Pageable pageable = new PageRequest(pageIndex, pageSize);
+        Page<User> page = userService.listUsersByNameLike(name, pageable);
+        List<User> list = page.getContent(); // 当前所在页面数据列表
+        model.addAttribute("page", page);
+        model.addAttribute("userList", list);
+        return new ModelAndView(async == true
+                ? "users/list :: #mainContainerRepleace"
+                : "users/list", "userModel", model);
+    }
 
     /**
-     * 根据id查询用户
+     * 获取 form 表单页面
+     * 
+     * @param user
+     * @return
+     */
+    @GetMapping("/add")
+    public ModelAndView createForm(Model model) {
+        model.addAttribute("user", new User(null, null, null, null));
+        return new ModelAndView("users/add", "userModel", model);
+    }
+
+    /**
+     * 新建用户
+     * 
+     * @param user
+     * @param result
+     * @param redirect
+     * @return
+     */
+    @PostMapping
+    public ResponseEntity<Response> create(User user, Long authorityId) {
+        List<Authority> authorities = new ArrayList<>();
+        authorities.add(authorityService.getAuthorityById(authorityId));
+        user.setAuthorities(authorities);
+
+        if (user.getId() == null) {
+            user.setEncodePassword(user.getPassword()); // 加密密码
+        } else {
+            // 判断密码是否做了变更
+            User originalUser = userService.getUserById(user.getId());
+            String rawPassword = originalUser.getPassword();
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            String encodePasswd = encoder.encode(user.getPassword());
+            boolean isMatch = encoder.matches(rawPassword, encodePasswd);
+            if (!isMatch) {
+                user.setEncodePassword(user.getPassword());
+            } else {
+                user.setPassword(user.getPassword());
+            }
+        }
+
+        try {
+            userService.saveUser(user);
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.ok().body(new Response(false,
+                    ConstraintViolationExceptionHandler.getMessage(e)));
+        }
+
+        return ResponseEntity.ok().body(new Response(true, "处理成功", user));
+    }
+    /**
+     * 删除用户
      * 
      * @param id
-     * @param model
      * @return
      */
-    @GetMapping("{id}")
-    public ModelAndView view(@PathVariable("id") String id, Model model) {
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("title", "查看用戶");
-        return new ModelAndView("users/view", "userModel", model);
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Response> delete(@PathVariable("id") Long id,
+            Model model) {
+        try {
+            userService.removeUser(id);
+        } catch (Exception e) {
+            return ResponseEntity.ok()
+                    .body(new Response(false, e.getMessage()));
+        }
+        return ResponseEntity.ok().body(new Response(true, "处理成功"));
     }
 
     /**
-     * 获取创建表单页面
+     * 获取修改用户的界面，及数据
      * 
-     * @param model
+     * @param user
      * @return
      */
-    @GetMapping("/form")
-    public ModelAndView creatForm(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("title", "创建用戶");
-        return new ModelAndView("users/form", "userModel", model);
-    }
-
-    @PostMapping("/saveOrUpdateUser")
-    public ModelAndView saveOrUpdateUser(User user, Model model) {
-        user = userService.saveOrUpdateUser(user);
-        return new ModelAndView("redirect:/users");
-    }
-
-    @GetMapping("/deleteUser/{id}")
-    public ModelAndView deleteUser(@PathVariable("id") String id,
-            Model model) {
-        userService.deleteUser(id);
-        return new ModelAndView("redirect:/users");
-    }
-
-    @GetMapping("/updateUser/{id}")
-    public ModelAndView updateUser(@PathVariable("id") String id,
-            Model model) {
+    @GetMapping(value = "edit/{id}")
+    public ModelAndView modifyForm(@PathVariable("id") Long id, Model model) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        model.addAttribute("title", "修改用戶");
-        return new ModelAndView("users/form", "userModel", model);
+        return new ModelAndView("users/edit", "userModel", model);
     }
 }

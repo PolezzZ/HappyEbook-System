@@ -9,8 +9,10 @@ package com.polezz.ebook.service;
 
 import java.util.List;
 
-import com.polezz.ebook.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import com.polezz.ebook.model.User;
 
 /**
  *
@@ -19,31 +21,58 @@ import com.polezz.ebook.model.User;
  */
 public interface UserService {
     /**
-     * 新增或保存用户
+     * 保存用户
+     * 
      * @param user
      * @return
      */
-    User saveOrUpdateUser(User user);
-    /**
-     * 注册用户用户
-     * @param user
-     * @return
-     */
-    User registerUser(User user);
+    User saveUser(User user);
+
     /**
      * 删除用户
-     * @param id
-     */
-    void deleteUser(String id);
-    /**
-     * 根据id查询用户
-     * @param id
+     * 
+     * @param user
      * @return
      */
-    User getUserById(String id);
+    void removeUser(Long id);
+
+    /**
+     * 删除列表里面的用户
+     * 
+     * @param user
+     * @return
+     */
+    void removeUsersInBatch(List<User> users);
+
+    /**
+     * 更新用户
+     * 
+     * @param user
+     * @return
+     */
+    User updateUser(User user);
+
+    /**
+     * 根据id获取用户
+     * 
+     * @param user
+     * @return
+     */
+    User getUserById(Long id);
+
     /**
      * 获取用户列表
+     * 
+     * @param user
      * @return
      */
-    List<User> listUsersByNameLike(String name);
+    List<User> listUsers();
+
+    /**
+     * 根据用户名进行分页模糊查询
+     * 
+     * @param user
+     * @return
+     */
+    Page<User> listUsersByNameLike(String name, Pageable pageable);
 }

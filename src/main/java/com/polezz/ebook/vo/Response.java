@@ -5,7 +5,7 @@
  *
  * Create Time: 2018年5月5日 下午11:13:27
  */
-package com.polezz.ebook.util;
+package com.polezz.ebook.vo;
 
 /**
  * 返回对象

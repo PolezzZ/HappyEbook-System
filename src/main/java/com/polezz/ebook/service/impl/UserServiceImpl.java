@@ -7,20 +7,20 @@
  */
 package com.polezz.ebook.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.polezz.ebook.mapper.UserMapper;
 import com.polezz.ebook.model.User;
 import com.polezz.ebook.service.UserService;
-import com.polezz.ebook.util.UUIDUtil;
 
 /**
  *
@@ -28,50 +28,56 @@ import com.polezz.ebook.util.UUIDUtil;
  * @version 1.0.0, 2018年4月21日 下午2:36:30
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
 
     @Transactional
     @Override
-    public User saveOrUpdateUser(User user) {
-        String id = user.getId();
-        if(id == null) {
-            id = UUIDUtil.getUUID();
-            user.setId(id);
-        }
-        userMapper.saveOrUpdateUser(user);
-        return user;
+    public User saveUser(User user) {
+        return userMapper.save(user);
     }
 
     @Transactional
     @Override
-    public User registerUser(User user) {
-        String id = user.getId();
-        if(id == null) {
-            id = UUIDUtil.getUUID();
-            user.setId(id);
-        }
-        userMapper.saveOrUpdateUser(user);
-        return user;
+    public void removeUser(Long id) {
+        userMapper.deleteById(id);
     }
 
     @Transactional
     @Override
-    public void deleteUser(String id) {
-        userMapper.deleteUser(id);
+    public void removeUsersInBatch(List<User> users) {
+        userMapper.deleteInBatch(users);
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(User user) {
+        return userMapper.save(user);
     }
 
     @Override
-    public User getUserById(String id) {
-        return userMapper.getUserById(id);
+    public User getUserById(Long id) {
+        return userMapper.getOne(id);
     }
 
     @Override
-    public List<User> listUsersByNameLike(String name) {
-        name = "%"+name+"%";
-        return userMapper.listUsersByNameLike(name);
+    public List<User> listUsers() {
+        return userMapper.findAll();
     }
 
+    @Override
+    public Page<User> listUsersByNameLike(String name, Pageable pageable) {
+        // 模糊查询
+        name = "%" + name + "%";
+        Page<User> users = userMapper.findByNameLike(name, pageable);
+        return users;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+        return userMapper.findByUsername(username);
+    }
 }
