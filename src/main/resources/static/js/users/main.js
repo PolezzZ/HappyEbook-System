@@ -91,13 +91,12 @@ $(function() {
 		     }
 		 });
 	});
-	
+
 	// 删除用户
 	$("#rightContainer").on("click",".blog-delete-user", function () { 
 		// 获取 CSRF Token 
 		var csrfToken = $("meta[name='_csrf']").attr("content");
 		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-		
 		
 		$.ajax({ 
 			 url: "/users/" + $(this).attr("userId") , 
