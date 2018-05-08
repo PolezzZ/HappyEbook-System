@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/js/**", "/fonts/**", "/index")
                 .permitAll() // 都可以访问
                 .antMatchers("/h2-console/**").permitAll() // 都可以访问
-                // .antMatchers("/admins/**").hasRole("ADMIN") // 需要相应的角色才能访问
+                .antMatchers("/admins/**").hasRole("ADMIN") // 需要相应的角色才能访问
                 .and().formLogin() // 基于 Form 表单登录验证
                 .loginPage("/login").failureUrl("/login-error") // 自定义登录界面
                 .and().rememberMe().key(KEY) // 启用 remember me

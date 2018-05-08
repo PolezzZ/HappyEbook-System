@@ -45,7 +45,7 @@ import com.polezz.ebook.vo.Response;
  */
 @RestController
 @RequestMapping("/users")
-//@PreAuthorize("hasAuthority('ROLE_ADMIN')") // 指定角色权限才能操作方法
+@PreAuthorize("hasAuthority('ROLE_ADMIN')") // 指定角色权限才能操作方法
 public class UserController {
     @Autowired
     private UserService userService;
