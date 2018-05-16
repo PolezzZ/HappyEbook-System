@@ -21,3 +21,6 @@ spring:
     show-sql: true
 server:
   port: 8070
+file:
+  server:
+    url:http://localhost:8071/upload
