@@ -7,6 +7,8 @@
  */
 package com.polezz.ebook.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -54,13 +56,27 @@ public class CommentController {
      * @param model
      * @return
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @GetMapping
     public String listComments(
             @RequestParam(value = "ebookId", required = true) Long ebookId,
             Model model) {
         Ebook ebook = ebookService.getEbookById(ebookId);
         List<Comment> comments = ebook.getComments();
-
+        Collections.sort(comments, new Comparator(){  
+            @Override  
+            public int compare(Object o1, Object o2) {  
+                Comment com1=(Comment)o1;  
+                Comment com2=(Comment)o2;  
+                if(com1.getCreateTime().after(com2.getCreateTime())){  
+                    return 1;  
+                }else if(com1.getCreateTime().before(com2.getCreateTime())){  
+                    return -1;  
+                }else{  
+                    return 0;  
+                }  
+            }             
+        });  
         // 判断操作用户是否是评论的所有者
         String commentOwner = "";
         if (SecurityContextHolder.getContext().getAuthentication() != null
@@ -90,7 +106,7 @@ public class CommentController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USER')") // 指定角色权限才能操作方法
     public ResponseEntity<Response> createComment(Long ebookId,
             String commentContent) {
-
+        System.out.println("alert(csrfToken);alert(csrfToken);");
         try {
             ebookService.createComment(ebookId, commentContent);
         } catch (ConstraintViolationException e) {

@@ -79,14 +79,14 @@ public class Ebook implements Serializable {
     @org.hibernate.annotations.CreationTimestamp // 由数据库自动创建时间
     private Timestamp createTime;
 
-    @Column(name = "reading")
-    private Integer reading = 0; // 访问量、阅读量
+    @Column(name = "readSize")
+    private Integer readSize = 0; // 访问量、阅读量
 
     @Column(name = "commentSize")
     private Integer commentSize = 0; // 评论量
 
-    @Column(name = "likes")
-    private Integer likes = 0; // 点赞量
+    @Column(name = "likeSize")
+    private Integer likeSize = 0; // 点赞量
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "ebook_comment", joinColumns = @JoinColumn(name = "ebook_id", referencedColumnName = "id"), 
@@ -160,12 +160,12 @@ public class Ebook implements Serializable {
         this.createTime = createTime;
     }
 
-    public Integer getReading() {
-        return reading;
+    public Integer getReadSize() {
+        return readSize;
     }
 
-    public void setReading(Integer reading) {
-        this.reading = reading;
+    public void setReadSize(Integer readSize) {
+        this.readSize = readSize;
     }
 
     public Integer getCommentSize() {
@@ -176,12 +176,12 @@ public class Ebook implements Serializable {
         this.commentSize = commentSize;
     }
 
-    public Integer getLikes() {
-        return likes;
+    public Integer getLikeSize() {
+        return likeSize;
     }
 
-    public void setLikes(Integer likes) {
-        this.likes = likes;
+    public void setLikes(Integer likeSize) {
+        this.likeSize = likeSize;
     }
 
     public List<Comment> getComments() {
@@ -213,8 +213,8 @@ public class Ebook implements Serializable {
     public String toString() {
         return "Ebook [id=" + id + ", title=" + title + ", summary=" + summary
                 + ", content=" + content + ", htmlContent=" + htmlContent
-                + ", user=" + user + ", createTime=" + createTime + ", reading="
-                + reading + ", commentSize=" + commentSize + ", likes=" + likes
+                + ", user=" + user + ", createTime=" + createTime + ", readSize="
+                + readSize + ", commentSize=" + commentSize + ", likeSize=" + likeSize
                 + ", comments=" + comments + "]";
     }
 }

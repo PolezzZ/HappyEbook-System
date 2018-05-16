@@ -58,7 +58,6 @@ $(function() {
 		// 获取 CSRF Token 
 		var csrfToken = $("meta[name='_csrf']").attr("content");
 		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-		alert("11");
 		$.ajax({
 		    url: '/u/'+ $(this).attr("userName") + '/ebooks/edit',
 		    type: 'POST',

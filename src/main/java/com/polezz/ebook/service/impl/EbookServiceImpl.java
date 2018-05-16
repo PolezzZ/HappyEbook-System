@@ -86,7 +86,7 @@ public class EbookServiceImpl implements EbookService {
     @Override
     public void readingIncrease(Long id) {
         Ebook ebook = ebookMapper.getOne(id);
-        ebook.setReading(ebook.getReading() + 1);
+        ebook.setReadSize(ebook.getReadSize() + 1);
         ebookMapper.save(ebook);
     }
 
