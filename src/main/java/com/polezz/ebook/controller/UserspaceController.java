@@ -36,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
+import com.polezz.ebook.model.Vote;
 import com.polezz.ebook.service.EbookService;
 import com.polezz.ebook.service.UserService;
 import com.polezz.ebook.util.ConstraintViolationExceptionHandler;
@@ -191,6 +192,9 @@ public class UserspaceController {
     @GetMapping("/{username}/ebooks/{id}")
     public String getEbooksById(@PathVariable("username") String username,
             @PathVariable("id") Long id, Model model) {
+        User principal = null;
+        Ebook ebook = ebookService.getEbookById(id);
+
         // 每次读取，简单的可以认为阅读量增加1次
         ebookService.readingIncrease(id);
 
@@ -202,15 +206,29 @@ public class UserspaceController {
                         .isAuthenticated()
                 && !SecurityContextHolder.getContext().getAuthentication()
                         .getPrincipal().toString().equals("anonymousUser")) {
-            User principal = (User) SecurityContextHolder.getContext()
+            principal = (User) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
             if (principal != null && username.equals(principal.getUsername())) {
                 isEbookOwner = true;
             }
         }
 
+        // 判断操作用户的点赞情况
+        List<Vote> votes = ebook.getVotes();
+        Vote currentVote = null; // 当前用户的点赞情况
+
+        if (principal != null) {
+            for (Vote vote : votes) {
+                if (vote.getUser().getUsername()
+                        .equals(principal.getUsername())) {
+                    currentVote = vote;
+                    break;
+                }
+            }
+        }
         model.addAttribute("isEbookOwner", isEbookOwner);
         model.addAttribute("ebookModel", ebookService.getEbookById(id));
+        model.addAttribute("currentVote", currentVote);
         return "/userspace/blog";
     }
 

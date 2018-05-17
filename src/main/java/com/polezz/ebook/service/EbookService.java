@@ -21,65 +21,93 @@ import com.polezz.ebook.model.User;
 public interface EbookService {
     /**
      * 保存Ebook
+     * 
      * @param Ebook
      * @return
      */
     Ebook saveEbook(Ebook ebook);
-    
+
     /**
      * 删除Ebook
+     * 
      * @param id
      * @return
      */
     void removeEbook(Long id);
-    
+
     /**
      * 更新Ebook
+     * 
      * @param Ebook
      * @return
      */
     Ebook updateEbook(Ebook ebook);
-    
+
     /**
      * 根据id获取Ebook
+     * 
      * @param id
      * @return
      */
     Ebook getEbookById(Long id);
-    
+
     /**
      * 根据用户名进行分页模糊查询（最新）
+     * 
      * @param user
      * @return
      */
-    Page<Ebook> listEbooksByTitleLike(User user, String title, Pageable pageable);
- 
+    Page<Ebook> listEbooksByTitleLike(User user, String title,
+            Pageable pageable);
+
     /**
      * 根据用户名进行分页模糊查询（最热）
+     * 
      * @param user
      * @return
      */
-    Page<Ebook> listEbooksByTitleLikeAndSort(User user, String title, Pageable pageable);
-    
+    Page<Ebook> listEbooksByTitleLikeAndSort(User user, String title,
+            Pageable pageable);
+
     /**
      * 阅读量递增
+     * 
      * @param id
      */
     void readingIncrease(Long id);
-    
+
     /**
      * 发表评论
+     * 
      * @param blogId
      * @param commentContent
      * @return
      */
     Ebook createComment(Long blogId, String commentContent);
-    
+
     /**
      * 删除评论
+     * 
      * @param blogId
      * @param commentId
      * @return
      */
     void removeComment(Long blogId, Long commentId);
+
+    /**
+     * 点赞
+     * 
+     * @param ebookId
+     * @return
+     */
+    Ebook createVote(Long ebookId);
+
+    /**
+     * 取消点赞
+     * 
+     * @param ebookId
+     * @param voteId
+     * @return
+     */
+    void removeVote(Long ebookId, Long voteId);
 }

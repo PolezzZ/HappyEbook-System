@@ -19,6 +19,7 @@ import com.polezz.ebook.mapper.EbookMapper;
 import com.polezz.ebook.model.Comment;
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
+import com.polezz.ebook.model.Vote;
 import com.polezz.ebook.service.EbookService;
 
 /**
@@ -93,16 +94,37 @@ public class EbookServiceImpl implements EbookService {
     @Override
     public Ebook createComment(Long ebookId, String commentContent) {
         Ebook originalEbook = ebookMapper.getOne(ebookId);
-        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+        User user = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
         Comment comment = new Comment(user, commentContent);
         originalEbook.addComment(comment);
         return ebookMapper.save(originalEbook);
     }
 
     @Override
-    public void removeComment(Long blogId, Long commentId) {
-        Ebook originalEbook = ebookMapper.getOne(blogId);
+    public void removeComment(Long ebookId, Long commentId) {
+        Ebook originalEbook = ebookMapper.getOne(ebookId);
         originalEbook.removeComment(commentId);
+        ebookMapper.save(originalEbook);
+    }
+
+    @Override
+    public Ebook createVote(Long ebookId) {
+        Ebook originalEbook = ebookMapper.getOne(ebookId);
+        User user = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        Vote vote = new Vote(user);
+        boolean isExist = originalEbook.addVote(vote);
+        if (isExist) {
+            throw new IllegalArgumentException("该用户已经点过赞了");
+        }
+        return ebookMapper.save(originalEbook);
+    }
+
+    @Override
+    public void removeVote(Long ebookId, Long voteId) {
+        Ebook originalEbook = ebookMapper.getOne(ebookId);
+        originalEbook.removeVote(voteId);
         ebookMapper.save(originalEbook);
     }
 }

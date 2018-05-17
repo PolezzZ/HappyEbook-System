@@ -89,9 +89,12 @@ public class Ebook implements Serializable {
     private Integer likeSize = 0; // 点赞量
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "ebook_comment", joinColumns = @JoinColumn(name = "ebook_id", referencedColumnName = "id"), 
-        inverseJoinColumns = @JoinColumn(name = "comment_id", referencedColumnName = "id"))
+    @JoinTable(name = "ebook_comment", joinColumns = @JoinColumn(name = "ebook_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "comment_id", referencedColumnName = "id"))
     private List<Comment> comments;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "ebook_vote", joinColumns = @JoinColumn(name = "ebook_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"))
+    private List<Vote> votes;
 
     protected Ebook() {
     }
@@ -180,7 +183,7 @@ public class Ebook implements Serializable {
         return likeSize;
     }
 
-    public void setLikes(Integer likeSize) {
+    public void setLikeSize(Integer likeSize) {
         this.likeSize = likeSize;
     }
 
@@ -190,31 +193,60 @@ public class Ebook implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-        this.commentSize= this.comments.size();
+        this.commentSize = this.comments.size();
     }
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
-        this.commentSize=this.comments.size();
+        this.commentSize = this.comments.size();
     }
 
     public void removeComment(Long commentId) {
-        Iterator<Comment> iterator =  this.comments.iterator();
-        while(iterator.hasNext()) {
+        Iterator<Comment> iterator = this.comments.iterator();
+        while (iterator.hasNext()) {
             Comment commentIn = iterator.next();
-            if(commentId.equals(commentIn.getId())) {
+            if (commentId.equals(commentIn.getId())) {
                 iterator.remove();
             }
         }
-        this.commentSize=this.comments.size();
+        this.commentSize = this.comments.size();
     }
 
-    @Override
-    public String toString() {
-        return "Ebook [id=" + id + ", title=" + title + ", summary=" + summary
-                + ", content=" + content + ", htmlContent=" + htmlContent
-                + ", user=" + user + ", createTime=" + createTime + ", readSize="
-                + readSize + ", commentSize=" + commentSize + ", likeSize=" + likeSize
-                + ", comments=" + comments + "]";
+    public List<Vote> getVotes() {
+        return votes;
     }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+        this.likeSize = this.votes.size();
+    }
+
+    public boolean addVote(Vote vote) {
+        boolean isExist = false;
+        Iterator<Vote> iterator = this.votes.iterator();
+        while (iterator.hasNext()) {
+            Vote voteIn = iterator.next();
+            if (vote.getUser().getId().equals(voteIn.getUser().getId())) {
+                isExist = true;
+                break;
+            }
+        }
+        if (!isExist) {
+            this.votes.add(vote);
+            this.likeSize = this.votes.size();
+        }
+        return isExist;
+    }
+
+    public void removeVote(Long votetId) {
+        Iterator<Vote> iterator = this.votes.iterator();
+        while (iterator.hasNext()) {
+            Vote voteIn = iterator.next();
+            if (votetId.equals(voteIn.getId())) {
+                iterator.remove();
+            }
+        }
+        this.likeSize = this.votes.size();
+    }
+
 }
