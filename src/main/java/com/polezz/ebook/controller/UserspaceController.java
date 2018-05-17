@@ -34,9 +34,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.polezz.ebook.model.Catalog;
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
 import com.polezz.ebook.model.Vote;
+import com.polezz.ebook.service.CatalogService;
 import com.polezz.ebook.service.EbookService;
 import com.polezz.ebook.service.UserService;
 import com.polezz.ebook.util.ConstraintViolationExceptionHandler;
@@ -58,6 +60,8 @@ public class UserspaceController {
     private UserService userService;
     @Autowired
     private EbookService ebookService;
+    @Autowired
+    private CatalogService catalogService;
 
     @GetMapping("/{username}")
     public String userSpace(@PathVariable("username") String username,
@@ -145,24 +149,23 @@ public class UserspaceController {
     @GetMapping("/{username}/ebooks")
     public String listEbooksByOrder(@PathVariable("username") String username,
             @RequestParam(value = "order", required = false, defaultValue = "new") String order,
-            @RequestParam(value = "category", required = false) Long category,
+            @RequestParam(value = "catalog", required = false) Long catalogId,
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "async", required = false) boolean async,
             @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             Model model) {
         User user = (User) userDetailsService.loadUserByUsername(username);
-        model.addAttribute("user", user);
-
-        if (category != null) {
-            System.out.println("category=" + category);
-            System.out.println("selflink:" + "redirect:/u/" + username
-                    + "/ebooks?category=" + category);
-            return "/u";
-        }
 
         Page<Ebook> page = null;
-        if (order.equals("hot")) {
+
+        if (catalogId != null && catalogId > 0) {
+            // 分类查询
+            Catalog catalog = catalogService.getCatalogById(catalogId);
+            Pageable pageable = new PageRequest(pageIndex, pageSize);
+            page = ebookService.listBlogsByCatalog(catalog, pageable);
+            order = "";
+        } else if (order.equals("hot")) {
             Sort sort = new Sort(Direction.DESC, "comments", "likes",
                     "reading");
             Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
@@ -174,7 +177,10 @@ public class UserspaceController {
         }
 
         List<Ebook> list = page.getContent(); // 当前所在页面数据列表
+        model.addAttribute("user", user);
         model.addAttribute("order", order);
+        model.addAttribute("catalogId", catalogId);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("page", page);
         model.addAttribute("ebookList", list);
         return (async == true
@@ -264,8 +270,12 @@ public class UserspaceController {
      * @return
      */
     @GetMapping("/{username}/ebooks/edit")
-    public ModelAndView createEbook(Model model) {
+    public ModelAndView createEbook(@PathVariable("username") String username,
+            Model model) {
+        User user = (User) userDetailsService.loadUserByUsername(username);
+        List<Catalog> catalogs = catalogService.listCatalogs(user);
         model.addAttribute("ebook", new Ebook(null, null, null));
+        model.addAttribute("catalogs", catalogs);
         return new ModelAndView("/userspace/blogedit", "ebookModel", model);
     }
 
@@ -278,7 +288,10 @@ public class UserspaceController {
     @GetMapping("/{username}/ebooks/edit/{id}")
     public ModelAndView editEbook(@PathVariable("username") String username,
             @PathVariable("id") Long id, Model model) {
+        User user = (User) userDetailsService.loadUserByUsername(username);
+        List<Catalog> catalogs = catalogService.listCatalogs(user);
         model.addAttribute("ebook", ebookService.getEbookById(id));
+        model.addAttribute("catalogs", catalogs);
         return new ModelAndView("/userspace/blogedit", "ebookModel", model);
     }
 
@@ -294,7 +307,10 @@ public class UserspaceController {
     public ResponseEntity<Response> saveEbook(
             @PathVariable("username") String username,
             @RequestBody Ebook ebook) {
-        System.out.println(ebook);
+        // 对 Catalog 进行空处理
+        if (ebook.getCatalog().getId() == null) {
+            return ResponseEntity.ok().body(new Response(false, "未选择分类"));
+        }
         User user = (User) userDetailsService.loadUserByUsername(username);
         ebook.setUser(user);
         try {

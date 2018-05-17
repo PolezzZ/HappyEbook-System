@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.polezz.ebook.mapper.EbookMapper;
+import com.polezz.ebook.model.Catalog;
 import com.polezz.ebook.model.Comment;
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
@@ -81,6 +82,12 @@ public class EbookServiceImpl implements EbookService {
             title = "%" + title + "%";
             ebooks = ebookMapper.findByUserAndTitleLike(user, title, pageable);
         }
+        return ebooks;
+    }
+
+    @Override
+    public Page<Ebook> listBlogsByCatalog(Catalog catalog, Pageable pageable) {
+        Page<Ebook> ebooks = ebookMapper.findByCatalog(catalog, pageable);
         return ebooks;
     }
 

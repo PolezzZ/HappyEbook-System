@@ -96,6 +96,10 @@ public class Ebook implements Serializable {
     @JoinTable(name = "ebook_vote", joinColumns = @JoinColumn(name = "ebook_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"))
     private List<Vote> votes;
 
+    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "catalog_id")
+    private Catalog catalog;
+
     protected Ebook() {
     }
 
@@ -247,6 +251,14 @@ public class Ebook implements Serializable {
             }
         }
         this.likeSize = this.votes.size();
+    }
+
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
     }
 
 }

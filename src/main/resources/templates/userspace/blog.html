@@ -44,7 +44,7 @@
                 <div class="card-block">
 
 
-                    <h5>分类：<a href="/u/waylau/ebooks?category=11">
+                    <h5>分类：<a th:href="'/u/'+${ebookModel.user.username} + '/ebooks?catalog='+${ebookModel.catalog.id} " th:text="${ebookModel.catalog.name}">
                         Spring Data
                     </a></h5>
 

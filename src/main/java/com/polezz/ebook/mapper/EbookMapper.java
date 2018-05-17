@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.polezz.ebook.model.Catalog;
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
 
@@ -56,4 +57,14 @@ public interface EbookMapper extends JpaRepository<Ebook, Long> {
      * @return
      */
     Page<Ebook> findByUser(User user, Pageable pageable);
+    /**
+     * 根据用户名分页查询用户列表
+     * 
+     * @param user
+     * @param title
+     * @param sort
+     * @param pageable
+     * @return
+     */
+    Page<Ebook> findByCatalog(Catalog catalog, Pageable pageable);
 }

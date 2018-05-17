@@ -10,6 +10,7 @@ package com.polezz.ebook.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.polezz.ebook.model.Catalog;
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
 
@@ -69,6 +70,15 @@ public interface EbookService {
     Page<Ebook> listEbooksByTitleLikeAndSort(User user, String title,
             Pageable pageable);
 
+    /**
+     * 根据分类进行查询
+     * 
+     * @param catalog
+     * @param pageable
+     * @return
+     */
+    Page<Ebook> listBlogsByCatalog(Catalog catalog, Pageable pageable);
+    
     /**
      * 阅读量递增
      * 
