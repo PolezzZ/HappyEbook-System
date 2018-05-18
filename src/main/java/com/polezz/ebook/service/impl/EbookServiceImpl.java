@@ -58,7 +58,7 @@ public class EbookServiceImpl implements EbookService {
     }
 
     @Override
-    public Page<Ebook> listEbooksByTitleLike(User user, String title,
+    public Page<Ebook> listEbooksByTitleVote(User user, String title,
             Pageable pageable) {
         Page<Ebook> ebooks = null;
         if (title == null) {
@@ -66,27 +66,31 @@ public class EbookServiceImpl implements EbookService {
                     pageable);
         } else {
             title = "%" + title + "%";
-            ebooks = ebookMapper.findByUserAndTitleLikeOrderByCreateTimeDesc(
-                    user, title, pageable);
+            String tags = title;
+            ebooks = ebookMapper
+                    .findByTitleLikeAndUserOrTagsLikeAndUserOrderByCreateTimeDesc(
+                            title, user, tags, user, pageable);
         }
         return ebooks;
     }
 
     @Override
-    public Page<Ebook> listEbooksByTitleLikeAndSort(User user, String title,
+    public Page<Ebook> listEbooksByTitleVoteAndSort(User user, String title,
             Pageable pageable) {
         Page<Ebook> ebooks = null;
         if (title == null) {
             ebooks = ebookMapper.findByUser(user, pageable);
         } else {
             title = "%" + title + "%";
-            ebooks = ebookMapper.findByUserAndTitleLike(user, title, pageable);
+            String tags = title;
+            ebooks = ebookMapper.findByTitleLikeAndUserOrTagsLikeAndUser(
+                    title, user, tags, user, pageable);
         }
         return ebooks;
     }
 
     @Override
-    public Page<Ebook> listBlogsByCatalog(Catalog catalog, Pageable pageable) {
+    public Page<Ebook> listEbooksByCatalog(Catalog catalog, Pageable pageable) {
         Page<Ebook> ebooks = ebookMapper.findByCatalog(catalog, pageable);
         return ebooks;
     }

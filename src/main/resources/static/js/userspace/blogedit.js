@@ -31,6 +31,11 @@ $(function() {
         animateDelete: 0,
         placeholder: '请输入标签'
     });
+    // 初始化标签
+   /* $('.form-control-tag').tagsInput({
+    	'defaultText':'输入标签'
+ 
+    });*/
     
     $('.form-control-chosen').chosen();
  
@@ -66,6 +71,7 @@ $(function() {
 		    	"title": $('#title').val(), 
 		    	"summary": $('#summary').val() , 
 		    	"catalog":{"id":$('#catalogSelect').val()},
+		    	"tags":$('.form-control-tag').val(),
 		    	"content": $('#md').val()}),
 			beforeSend: function(request) {
 			    request.setRequestHeader(csrfHeader, csrfToken); // 添加  CSRF Token 

@@ -29,8 +29,8 @@ public interface EbookMapper extends JpaRepository<Ebook, Long> {
      * @param pageable
      * @return
      */
-    Page<Ebook> findByUserAndTitleLike(User user, String title,
-            Pageable pageable);
+    Page<Ebook> findByTitleLikeAndUserOrTagsLikeAndUser(String title,
+            User user, String tags, User user2, Pageable pageable);
 
     /**
      * 
@@ -39,8 +39,9 @@ public interface EbookMapper extends JpaRepository<Ebook, Long> {
      * @param pageable
      * @return
      */
-    Page<Ebook> findByUserAndTitleLikeOrderByCreateTimeDesc(User user,
-            String title, Pageable pageable);
+    Page<Ebook> findByTitleLikeAndUserOrTagsLikeAndUserOrderByCreateTimeDesc(
+            String title, User user, String tags, User user2,
+            Pageable pageable);
 
     /**
      * 

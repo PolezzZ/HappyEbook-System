@@ -58,7 +58,7 @@ public interface EbookService {
      * @param user
      * @return
      */
-    Page<Ebook> listEbooksByTitleLike(User user, String title,
+    Page<Ebook> listEbooksByTitleVote(User user, String title,
             Pageable pageable);
 
     /**
@@ -67,7 +67,7 @@ public interface EbookService {
      * @param user
      * @return
      */
-    Page<Ebook> listEbooksByTitleLikeAndSort(User user, String title,
+    Page<Ebook> listEbooksByTitleVoteAndSort(User user, String title,
             Pageable pageable);
 
     /**
@@ -77,7 +77,7 @@ public interface EbookService {
      * @param pageable
      * @return
      */
-    Page<Ebook> listBlogsByCatalog(Catalog catalog, Pageable pageable);
+    Page<Ebook> listEbooksByCatalog(Catalog catalog, Pageable pageable);
     
     /**
      * 阅读量递增

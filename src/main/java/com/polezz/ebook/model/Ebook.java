@@ -88,6 +88,9 @@ public class Ebook implements Serializable {
     @Column(name = "likeSize")
     private Integer likeSize = 0; // 点赞量
 
+    @Column(name = "tags", length = 100)
+    private String tags; // 标签
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "ebook_comment", joinColumns = @JoinColumn(name = "ebook_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "comment_id", referencedColumnName = "id"))
     private List<Comment> comments;
@@ -191,6 +194,14 @@ public class Ebook implements Serializable {
         this.likeSize = likeSize;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -261,4 +272,13 @@ public class Ebook implements Serializable {
         this.catalog = catalog;
     }
 
+    @Override
+    public String toString() {
+        return "Ebook [id=" + id + ", title=" + title + ", summary=" + summary
+                + ", content=" + content + ", htmlContent=" + htmlContent
+                + ", user=" + user + ", createTime=" + createTime
+                + ", readSize=" + readSize + ", commentSize=" + commentSize
+                + ", likeSize=" + likeSize + ", tags=" + tags + ", comments="
+                + comments + ", votes=" + votes + ", catalog=" + catalog + "]";
+    }
 }

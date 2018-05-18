@@ -163,17 +163,17 @@ public class UserspaceController {
             // 分类查询
             Catalog catalog = catalogService.getCatalogById(catalogId);
             Pageable pageable = new PageRequest(pageIndex, pageSize);
-            page = ebookService.listBlogsByCatalog(catalog, pageable);
+            page = ebookService.listEbooksByCatalog(catalog, pageable);
             order = "";
         } else if (order.equals("hot")) {
-            Sort sort = new Sort(Direction.DESC, "comments", "likes",
-                    "reading");
+            Sort sort = new Sort(Direction.DESC, "commentSize", "likeSize",
+                    "readSize");
             Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-            page = ebookService.listEbooksByTitleLikeAndSort(user, keyword,
+            page = ebookService.listEbooksByTitleVoteAndSort(user, keyword,
                     pageable);
         } else if (order.equals("new")) {
             Pageable pageable = new PageRequest(pageIndex, pageSize);
-            page = ebookService.listEbooksByTitleLike(user, keyword, pageable);
+            page = ebookService.listEbooksByTitleVote(user, keyword, pageable);
         }
 
         List<Ebook> list = page.getContent(); // 当前所在页面数据列表
