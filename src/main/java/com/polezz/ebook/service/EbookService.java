@@ -37,14 +37,6 @@ public interface EbookService {
     void removeEbook(Long id);
 
     /**
-     * 更新Ebook
-     * 
-     * @param Ebook
-     * @return
-     */
-    Ebook updateEbook(Ebook ebook);
-
-    /**
      * 根据id获取Ebook
      * 
      * @param id
@@ -89,20 +81,20 @@ public interface EbookService {
     /**
      * 发表评论
      * 
-     * @param blogId
+     * @param ebookId
      * @param commentContent
      * @return
      */
-    Ebook createComment(Long blogId, String commentContent);
+    Ebook createComment(Long ebookId, String commentContent);
 
     /**
      * 删除评论
      * 
-     * @param blogId
+     * @param ebookId
      * @param commentId
      * @return
      */
-    void removeComment(Long blogId, Long commentId);
+    void removeComment(Long ebookId, Long commentId);
 
     /**
      * 点赞

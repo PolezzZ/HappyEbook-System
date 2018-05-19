@@ -28,7 +28,6 @@ import org.hibernate.validator.constraints.NotEmpty;
  * @version 1.0.0, 2018年5月17日 下午10:52:05
  */
 @Entity // 实体
-@SuppressWarnings("deprecation")
 public class Catalog implements Serializable {
     private static final long serialVersionUID = 1L;
 

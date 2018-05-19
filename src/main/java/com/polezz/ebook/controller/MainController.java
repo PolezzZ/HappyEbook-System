@@ -42,7 +42,7 @@ public class MainController {
     }
     @GetMapping("/index")
     public String index() {
-        return "index";
+        return "redirect:/ebooks";
     }
     @GetMapping("/login")
     public String login() {
@@ -56,7 +56,6 @@ public class MainController {
     }
     @PostMapping("/register")
     public String registerUser(User user) {
-        System.out.println(user);
         List<Authority> authorities = new ArrayList<>();
         authorities
                 .add(authorityService.getAuthorityById(ROLE_USER_AUTHORITY_ID));

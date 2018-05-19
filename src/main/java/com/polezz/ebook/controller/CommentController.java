@@ -106,7 +106,6 @@ public class CommentController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_USER')") // 指定角色权限才能操作方法
     public ResponseEntity<Response> createComment(Long ebookId,
             String commentContent) {
-        System.out.println("alert(csrfToken);alert(csrfToken);");
         try {
             ebookService.createComment(ebookId, commentContent);
         } catch (ConstraintViolationException e) {

@@ -59,7 +59,6 @@ public class UserController {
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             Model model) {
-        @SuppressWarnings("deprecation")
         Pageable pageable = new PageRequest(pageIndex, pageSize);
         Page<User> page = userService.listUsersByNameLike(name, pageable);
         List<User> list = page.getContent(); // 当前所在页面数据列表
@@ -131,7 +130,6 @@ public class UserController {
     public ResponseEntity<Response> delete(@PathVariable("id") Long id,
             Model model) {
         try {
-            System.out.println(id);
             userService.removeUser(id);
         } catch (Exception e) {
             return ResponseEntity.ok()

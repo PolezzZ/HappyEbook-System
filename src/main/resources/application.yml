@@ -19,6 +19,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch  
+      cluster-nodes: localhost:9300
+      repositories:
+        enabled: true
 server:
   port: 8070
 file:

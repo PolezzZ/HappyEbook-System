@@ -7,6 +7,7 @@
  */
 package com.polezz.ebook.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void removeUser(Long id) {
-        userMapper.deleteById(id);
+        userMapper.delete(id);
     }
 
     @Transactional
@@ -79,5 +80,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
         return userMapper.findByUsername(username);
+    }
+
+    @Override
+    public List<User> listUsersByUsernames(Collection<String> usernames) {
+        return userMapper.findByUsernameIn(usernames);
     }
 }

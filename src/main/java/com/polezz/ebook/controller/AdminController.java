@@ -35,7 +35,6 @@ public class AdminController {
      */
     @GetMapping
     public ModelAndView listUsers(Model model) {
-        System.out.println("@RequestMapping(\"/admins\")");
         List<Menu> list = new ArrayList<>();
         list.add(new Menu("用户管理", "/users"));
         list.add(new Menu("角色管理", "/roles"));

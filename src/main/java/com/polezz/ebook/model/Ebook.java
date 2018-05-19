@@ -40,7 +40,6 @@ import com.github.rjeschke.txtmark.Processor;
 // 标识为ES的文档
 @Entity // 实体
 @Document(indexName = "ebook", type = "ebook")
-@SuppressWarnings("deprecation")
 public class Ebook implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id // 主键

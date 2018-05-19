@@ -91,8 +91,6 @@ public class CatalogController {
     @PostMapping
     @PreAuthorize("authentication.name.equals(#catalogVO.username)") // 指定用户才能操作方法
     public ResponseEntity<Response> create(@RequestBody CatalogVO catalogVO) {
-        System.out.println("222222");
-        System.out.println(catalogVO);
         String username = catalogVO.getUsername();
         Catalog catalog = catalogVO.getCatalog();
 

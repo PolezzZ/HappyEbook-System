@@ -7,6 +7,7 @@
  */
 package com.polezz.ebook.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -75,4 +76,12 @@ public interface UserService {
      * @return
      */
     Page<User> listUsersByNameLike(String name, Pageable pageable);
+
+    /**
+     * 更具名称列表查询
+     * 
+     * @param usernames
+     * @return
+     */
+    List<User> listUsersByUsernames(Collection<String> usernames);
 }

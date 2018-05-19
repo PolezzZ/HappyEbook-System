@@ -21,7 +21,9 @@ import com.polezz.ebook.model.Comment;
 import com.polezz.ebook.model.Ebook;
 import com.polezz.ebook.model.User;
 import com.polezz.ebook.model.Vote;
+import com.polezz.ebook.model.es.EsEbook;
 import com.polezz.ebook.service.EbookService;
+import com.polezz.ebook.service.EsEbookService;
 
 /**
  *
@@ -33,23 +35,31 @@ public class EbookServiceImpl implements EbookService {
 
     @Autowired
     private EbookMapper ebookMapper;
+    @Autowired
+    private EsEbookService esEbookService;
 
     @Transactional
     @Override
     public Ebook saveEbook(Ebook ebook) {
-        return ebookMapper.save(ebook);
+        boolean isNew = (ebook.getId() == null);
+        EsEbook esEbook = null;
+        Ebook returnEbook = ebookMapper.save(ebook);
+        if (isNew) {
+            esEbook = new EsEbook(returnEbook);
+        } else {
+            esEbook = esEbookService.getEsEbookByEbookId(ebook.getId());
+            esEbook.update(returnEbook);
+        }
+        esEbookService.updateEsEbook(esEbook);
+        return returnEbook;
     }
 
     @Transactional
     @Override
     public void removeEbook(Long id) {
-        ebookMapper.deleteById(id);
-    }
-
-    @Transactional
-    @Override
-    public Ebook updateEbook(Ebook ebook) {
-        return ebookMapper.save(ebook);
+        ebookMapper.delete(id);
+        EsEbook esebook = esEbookService.getEsEbookByEbookId(id);
+        esEbookService.removeEsEbook(esebook.getId());
     }
 
     @Override
@@ -83,8 +93,8 @@ public class EbookServiceImpl implements EbookService {
         } else {
             title = "%" + title + "%";
             String tags = title;
-            ebooks = ebookMapper.findByTitleLikeAndUserOrTagsLikeAndUser(
-                    title, user, tags, user, pageable);
+            ebooks = ebookMapper.findByTitleLikeAndUserOrTagsLikeAndUser(title,
+                    user, tags, user, pageable);
         }
         return ebooks;
     }

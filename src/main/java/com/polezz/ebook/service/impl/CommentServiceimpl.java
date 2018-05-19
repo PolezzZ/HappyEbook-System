@@ -29,7 +29,7 @@ public class CommentServiceimpl implements CommentService {
     @Override
     @Transactional
     public void removeComment(Long id) {
-        commentMapper.deleteById(id);
+        commentMapper.delete(id);
     }
     @Override
     public Comment getCommentById(Long id) {

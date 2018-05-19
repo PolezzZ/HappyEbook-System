@@ -30,7 +30,7 @@ public class VoteServiceImpl implements VoteService {
     @Override
     @Transactional
     public void removeVote(Long id) {
-        voteMapper.deleteById(id);
+        voteMapper.delete(id);
     }
     @Override
     public Vote getVoteById(Long id) {

@@ -30,7 +30,6 @@ import org.hibernate.validator.constraints.NotEmpty;
  * @version 1.0.0, 2018年5月16日 下午2:07:32
  */
 @Entity // 实体
-@SuppressWarnings("deprecation")
 public class Comment implements Serializable {
 
     private static final long serialVersionUID = 1L;

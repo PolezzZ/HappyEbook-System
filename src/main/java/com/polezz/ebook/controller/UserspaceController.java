@@ -145,7 +145,6 @@ public class UserspaceController {
         return ResponseEntity.ok().body(new Response(true, "处理成功", avatarUrl));
     }
 
-    @SuppressWarnings("deprecation")
     @GetMapping("/{username}/ebooks")
     public String listEbooksByOrder(@PathVariable("username") String username,
             @RequestParam(value = "order", required = false, defaultValue = "new") String order,
@@ -311,10 +310,21 @@ public class UserspaceController {
         if (ebook.getCatalog().getId() == null) {
             return ResponseEntity.ok().body(new Response(false, "未选择分类"));
         }
-        User user = (User) userDetailsService.loadUserByUsername(username);
-        ebook.setUser(user);
         try {
-            ebookService.saveEbook(ebook);
+            // 判断是修改还是新增
+            if (ebook.getId()!=null) {
+                Ebook orignalEbook = ebookService.getEbookById(ebook.getId());
+                orignalEbook.setTitle(ebook.getTitle());
+                orignalEbook.setContent(ebook.getContent());
+                orignalEbook.setSummary(ebook.getSummary());
+                orignalEbook.setCatalog(ebook.getCatalog());
+                orignalEbook.setTags(ebook.getTags());
+                ebookService.saveEbook(orignalEbook);
+            } else {
+                User user = (User)userDetailsService.loadUserByUsername(username);
+                ebook.setUser(user);
+                ebookService.saveEbook(ebook);
+            }
         } catch (ConstraintViolationException e) {
             return ResponseEntity.ok().body(new Response(false,
                     ConstraintViolationExceptionHandler.getMessage(e)));

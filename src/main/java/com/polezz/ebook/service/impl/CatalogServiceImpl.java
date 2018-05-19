@@ -41,7 +41,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public void removeCatalog(Long id) {
-        catalogMapper.deleteById(id);
+        catalogMapper.delete(id);
     }
 
     @Override

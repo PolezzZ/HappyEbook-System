@@ -38,7 +38,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @version 1.0.0, 2018年4月21日 下午2:22:53
  */
 @Entity // 实体
-@SuppressWarnings("deprecation")
 public class User implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
     @Id // 主键
