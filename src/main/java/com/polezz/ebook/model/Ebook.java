@@ -87,7 +87,7 @@ public class Ebook implements Serializable {
     @Column(name = "likeSize")
     private Integer likeSize = 0; // 点赞量
 
-    @Column(name = "tags", length = 100)
+    @Column(name = "tags", length = 10000)
     private String tags; // 标签
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

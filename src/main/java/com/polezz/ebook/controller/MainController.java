@@ -54,6 +54,12 @@ public class MainController {
         model.addAttribute("errorMsg", "登录失败");
         return "login";
     }
+
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
     @PostMapping("/register")
     public String registerUser(User user) {
         List<Authority> authorities = new ArrayList<>();
