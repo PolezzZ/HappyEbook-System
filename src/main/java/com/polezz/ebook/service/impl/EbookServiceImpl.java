@@ -109,7 +109,7 @@ public class EbookServiceImpl implements EbookService {
     public void readingIncrease(Long id) {
         Ebook ebook = ebookMapper.getOne(id);
         ebook.setReadSize(ebook.getReadSize() + 1);
-        ebookMapper.save(ebook);
+        this.saveEbook(ebook);
     }
 
     @Override
@@ -119,14 +119,14 @@ public class EbookServiceImpl implements EbookService {
                 .getAuthentication().getPrincipal();
         Comment comment = new Comment(user, commentContent);
         originalEbook.addComment(comment);
-        return ebookMapper.save(originalEbook);
+        return this.saveEbook(originalEbook);
     }
 
     @Override
     public void removeComment(Long ebookId, Long commentId) {
         Ebook originalEbook = ebookMapper.getOne(ebookId);
         originalEbook.removeComment(commentId);
-        ebookMapper.save(originalEbook);
+        this.saveEbook(originalEbook);
     }
 
     @Override
@@ -139,13 +139,13 @@ public class EbookServiceImpl implements EbookService {
         if (isExist) {
             throw new IllegalArgumentException("该用户已经点过赞了");
         }
-        return ebookMapper.save(originalEbook);
+        return this.saveEbook(originalEbook);
     }
 
     @Override
     public void removeVote(Long ebookId, Long voteId) {
         Ebook originalEbook = ebookMapper.getOne(ebookId);
         originalEbook.removeVote(voteId);
-        ebookMapper.save(originalEbook);
+        this.saveEbook(originalEbook);
     }
 }
