@@ -34,7 +34,6 @@ $(function() {
     });
  
  	$("#uploadImage").click(function() {
-		alert("000"+$('#fileName').val());
 		// 获取 CSRF Token 
 		var csrfToken = $("meta[name='_csrf']").attr("content");
 		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -54,7 +53,6 @@ $(function() {
 					 $("#uploadformid").attr("style","display:none;");
 					 $("#uploadStatus").attr("style","display:inline;");
 					 $('#fileName').val(data.message);
-					 alert("111"+$('#fileName').val());
 					 } else {
 						 toastr.error("error!");
 					 }
@@ -70,7 +68,6 @@ $(function() {
 		// 获取 CSRF Token 
 		var csrfToken = $("meta[name='_csrf']").attr("content");
 		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-		alert($('#fileName').val());
 		$.ajax({
 		    url: '/u/'+ $(this).attr("userName") + '/ebooks/edit',
 		    type: 'POST',

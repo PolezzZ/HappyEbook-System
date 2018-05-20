@@ -7,18 +7,25 @@
  */
 package com.polezz.ebook.controller;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -204,7 +211,6 @@ public class UserspaceController {
             @PathVariable("id") Long id, Model model) {
         User principal = null;
         Ebook ebook = ebookService.getEbookById(id);
-
         // 每次读取，简单的可以认为阅读量增加1次
         ebookService.readingIncrease(id);
 
@@ -323,7 +329,9 @@ public class UserspaceController {
                 orignalEbook.setContent(ebook.getContent());
                 orignalEbook.setSummary(ebook.getSummary());
                 orignalEbook.setCatalog(ebook.getCatalog());
-                orignalEbook.setFileName(ebook.getFileName());
+                if (ebook.getFileName() != "") {
+                    orignalEbook.setFileName(ebook.getFileName());
+                }
                 orignalEbook.setTags(ebook.getTags());
                 ebookService.saveEbook(orignalEbook);
             } else {
@@ -353,9 +361,9 @@ public class UserspaceController {
      * @return
      */
     @PostMapping("/upload")
-    public ResponseEntity<Response> updload(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<Response> updload(
+            @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes) {
-        System.out.println("222222");
         String filePath = "D://Ebook//";
         String fileName = "";
         try {
@@ -366,8 +374,8 @@ public class UserspaceController {
                     originalFileName.lastIndexOf("."));
             File dest = null;
             while (dest == null || dest.exists()) {
-                fileName = originalName + "_"
-                        + UUIDUtil.getUUID().substring(7)+suffixName;
+                fileName = originalName + "_" + UUIDUtil.getUUID().substring(7)
+                        + suffixName;
                 String path = filePath + fileName;
                 dest = new File(path);
             }
@@ -381,7 +389,23 @@ public class UserspaceController {
             return ResponseEntity.ok()
                     .body(new Response(false, e.getMessage()));
         }
-        return ResponseEntity.ok()
-                .body(new Response(true, fileName));
+        return ResponseEntity.ok().body(new Response(true, fileName));
+    }
+
+    @GetMapping(value = "/export/{id}")
+    public ResponseEntity<FileSystemResource> listExport(
+            @PathVariable("id") Long id) {
+        Ebook ebook = ebookService.getEbookById(id);
+        String fileName = ebook.getFileName();
+        File file = new File("D://Ebook//" + fileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Content-Disposition", "attachment; filename=" + fileName);
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        return ResponseEntity.ok().headers(headers).contentLength(file.length())
+                .contentType(
+                        MediaType.parseMediaType("application/octet-stream"))
+                .body(new FileSystemResource(file));
     }
 }
