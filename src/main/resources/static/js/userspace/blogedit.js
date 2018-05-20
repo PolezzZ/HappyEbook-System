@@ -34,17 +34,30 @@ $(function() {
     });
  
  	$("#uploadImage").click(function() {
+		alert("000"+$('#fileName').val());
+		// 获取 CSRF Token 
+		var csrfToken = $("meta[name='_csrf']").attr("content");
+		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
 		$.ajax({
-		    url: 'http://localhost:8081/upload',
+		    url: '/u/upload',
 		    type: 'POST',
 		    cache: false,
 		    data: new FormData($('#uploadformid')[0]),
+			beforeSend: function(request) {
+			    request.setRequestHeader(csrfHeader, csrfToken); // 添加  CSRF Token 
+			},
 		    processData: false,
 		    contentType: false,
 		    success: function(data){
-		    	var mdcontent=$("#md").val();
-		    	 $("#md").val(mdcontent + "\n![]("+data +") \n");
- 
+				 if (data.success) {
+					 $("#uploadImage").attr("style","display:none;");
+					 $("#uploadformid").attr("style","display:none;");
+					 $("#uploadStatus").attr("style","display:inline;");
+					 $('#fileName').val(data.message);
+					 alert("111"+$('#fileName').val());
+					 } else {
+						 toastr.error("error!");
+					 }
 	         }
 		}).done(function(res) {
 			$('#file').val('');
@@ -57,14 +70,16 @@ $(function() {
 		// 获取 CSRF Token 
 		var csrfToken = $("meta[name='_csrf']").attr("content");
 		var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-
+		alert($('#fileName').val());
 		$.ajax({
 		    url: '/u/'+ $(this).attr("userName") + '/ebooks/edit',
 		    type: 'POST',
 			contentType: "application/json; charset=utf-8",
-		    data:JSON.stringify({"id":$('#ebookId').val(), 
+		    data:JSON.stringify({
+		    	"id":$('#ebookId').val(), 
 		    	"title": $('#title').val(), 
 		    	"summary": $('#summary').val() , 
+		    	"fileName": $('#fileName').val(), 
 		    	"content": $('#md').val(), 
 		    	"catalog":{"id":$('#catalogSelect').val()},
 		    	"tags":$('.form-control-tag').val()

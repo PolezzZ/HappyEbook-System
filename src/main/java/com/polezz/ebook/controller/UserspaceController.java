@@ -7,6 +7,8 @@
  */
 package com.polezz.ebook.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -32,7 +34,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.polezz.ebook.model.Catalog;
 import com.polezz.ebook.model.Ebook;
@@ -42,6 +46,7 @@ import com.polezz.ebook.service.CatalogService;
 import com.polezz.ebook.service.EbookService;
 import com.polezz.ebook.service.UserService;
 import com.polezz.ebook.util.ConstraintViolationExceptionHandler;
+import com.polezz.ebook.util.UUIDUtil;
 import com.polezz.ebook.vo.Response;
 
 /**
@@ -312,16 +317,18 @@ public class UserspaceController {
         }
         try {
             // 判断是修改还是新增
-            if (ebook.getId()!=null) {
+            if (ebook.getId() != null) {
                 Ebook orignalEbook = ebookService.getEbookById(ebook.getId());
                 orignalEbook.setTitle(ebook.getTitle());
                 orignalEbook.setContent(ebook.getContent());
                 orignalEbook.setSummary(ebook.getSummary());
                 orignalEbook.setCatalog(ebook.getCatalog());
+                orignalEbook.setFileName(ebook.getFileName());
                 orignalEbook.setTags(ebook.getTags());
                 ebookService.saveEbook(orignalEbook);
             } else {
-                User user = (User)userDetailsService.loadUserByUsername(username);
+                User user = (User) userDetailsService
+                        .loadUserByUsername(username);
                 ebook.setUser(user);
                 ebookService.saveEbook(ebook);
             }
@@ -336,5 +343,45 @@ public class UserspaceController {
         String redirectUrl = "/u/" + username + "/ebooks/" + ebook.getId();
         return ResponseEntity.ok()
                 .body(new Response(true, "处理成功", redirectUrl));
+    }
+
+    /**
+     * 保存电子书文件
+     * 
+     * @param username
+     * @param blog
+     * @return
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<Response> updload(@RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes) {
+        System.out.println("222222");
+        String filePath = "D://Ebook//";
+        String fileName = "";
+        try {
+            String originalFileName = file.getOriginalFilename();
+            String suffixName = originalFileName
+                    .substring(originalFileName.lastIndexOf("."));
+            String originalName = originalFileName.substring(0,
+                    originalFileName.lastIndexOf("."));
+            File dest = null;
+            while (dest == null || dest.exists()) {
+                fileName = originalName + "_"
+                        + UUIDUtil.getUUID().substring(7)+suffixName;
+                String path = filePath + fileName;
+                dest = new File(path);
+            }
+            // 检查是否存在目录
+            if (dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            file.transferTo(dest);
+        } catch (IllegalStateException | IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok()
+                    .body(new Response(false, e.getMessage()));
+        }
+        return ResponseEntity.ok()
+                .body(new Response(true, fileName));
     }
 }

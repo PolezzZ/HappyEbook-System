@@ -53,7 +53,8 @@ public class EsEbook implements Serializable {
     private Integer commentSize = 0; // 评论量
     @Field(index = FieldIndex.not_analyzed) // 不做全文检索字段
     private Integer likeSize = 0; // 点赞量
-
+    @Field(index = FieldIndex.not_analyzed) // 不做全文检索字段
+    private String fileName;
     private String tags; // 标签
 
     protected EsEbook() { // JPA 的规范要求无参构造函数；设为 protected 防止直接使用
@@ -67,7 +68,7 @@ public class EsEbook implements Serializable {
     public EsEbook(Long ebookId, String title, String summary, String content,
             String username, String avatar, Timestamp createTime,
             Integer readSize, Integer commentSize, Integer likeSize,
-            String tags) {
+            String fileName, String tags) {
         this.ebookId = ebookId;
         this.title = title;
         this.summary = summary;
@@ -78,6 +79,7 @@ public class EsEbook implements Serializable {
         this.readSize = readSize;
         this.commentSize = commentSize;
         this.likeSize = likeSize;
+        this.fileName = fileName;
         this.tags = tags;
     }
 
@@ -92,6 +94,7 @@ public class EsEbook implements Serializable {
         this.readSize = ebook.getReadSize();
         this.commentSize = ebook.getCommentSize();
         this.likeSize = ebook.getLikeSize();
+        this.fileName = ebook.getFileName();
         this.tags = ebook.getTags();
     }
 
@@ -106,6 +109,7 @@ public class EsEbook implements Serializable {
         this.readSize = ebook.getReadSize();
         this.commentSize = ebook.getCommentSize();
         this.likeSize = ebook.getLikeSize();
+        this.fileName = ebook.getFileName();
         this.tags = ebook.getTags();
     }
 
@@ -178,6 +182,14 @@ public class EsEbook implements Serializable {
 
     public void setLikeSize(Integer likeSize) {
         this.likeSize = likeSize;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getTags() {

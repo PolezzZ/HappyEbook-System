@@ -70,6 +70,11 @@ public class Ebook implements Serializable {
     @Column(nullable = false) // 映射为字段，值不能为空
     private String htmlContent; // 将 md 转为 html
 
+    @NotEmpty(message = "文件名不能为空")
+    @Size(min = 2, max = 50)
+    @Column(nullable = false, length = 50) // 映射为字段，值不能为空
+    private String fileName;
+
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -151,6 +156,14 @@ public class Ebook implements Serializable {
 
     public void setHtmlContent(String htmlContent) {
         this.htmlContent = htmlContent;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public User getUser() {
@@ -275,9 +288,10 @@ public class Ebook implements Serializable {
     public String toString() {
         return "Ebook [id=" + id + ", title=" + title + ", summary=" + summary
                 + ", content=" + content + ", htmlContent=" + htmlContent
-                + ", user=" + user + ", createTime=" + createTime
-                + ", readSize=" + readSize + ", commentSize=" + commentSize
-                + ", likeSize=" + likeSize + ", tags=" + tags + ", comments="
-                + comments + ", votes=" + votes + ", catalog=" + catalog + "]";
+                + ", fileName=" + fileName + ", user=" + user + ", createTime="
+                + createTime + ", readSize=" + readSize + ", commentSize="
+                + commentSize + ", likeSize=" + likeSize + ", tags=" + tags
+                + ", comments=" + comments + ", votes=" + votes + ", catalog="
+                + catalog + "]";
     }
 }
