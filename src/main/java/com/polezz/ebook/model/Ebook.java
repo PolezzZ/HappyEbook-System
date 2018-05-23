@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,15 +21,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.elasticsearch.annotations.Document;
-
-import com.github.rjeschke.txtmark.Processor;
 
 /**
  *
@@ -55,20 +51,6 @@ public class Ebook implements Serializable {
     @Size(min = 2, max = 300)
     @Column(nullable = false) // 映射为字段，值不能为空
     private String summary;
-
-    @Lob // 大对象，映射 MySQL 的 Long Text 类型
-    @Basic(fetch = FetchType.LAZY) // 懒加载
-    @NotEmpty(message = "内容不能为空")
-    @Size(min = 2)
-    @Column(nullable = false) // 映射为字段，值不能为空
-    private String content;
-
-    @Lob // 大对象，映射 MySQL 的 Long Text 类型
-    @Basic(fetch = FetchType.LAZY) // 懒加载
-    @NotEmpty(message = "内容不能为空")
-    @Size(min = 2)
-    @Column(nullable = false) // 映射为字段，值不能为空
-    private String htmlContent; // 将 md 转为 html
 
     @NotEmpty(message = "文件名不能为空")
     @Size(min = 2, max = 50)
@@ -110,11 +92,10 @@ public class Ebook implements Serializable {
     protected Ebook() {
     }
 
-    public Ebook(String title, String summary, String content) {
+    public Ebook(String title, String summary) {
         super();
         this.title = title;
         this.summary = summary;
-        this.content = content;
     }
 
     public Long getId() {
@@ -139,23 +120,6 @@ public class Ebook implements Serializable {
 
     public void setSummary(String summary) {
         this.summary = summary;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-        this.htmlContent = Processor.process(content);
-    }
-
-    public String getHtmlContent() {
-        return htmlContent;
-    }
-
-    public void setHtmlContent(String htmlContent) {
-        this.htmlContent = htmlContent;
     }
 
     public String getFileName() {
@@ -287,7 +251,6 @@ public class Ebook implements Serializable {
     @Override
     public String toString() {
         return "Ebook [id=" + id + ", title=" + title + ", summary=" + summary
-                + ", content=" + content + ", htmlContent=" + htmlContent
                 + ", fileName=" + fileName + ", user=" + user + ", createTime="
                 + createTime + ", readSize=" + readSize + ", commentSize="
                 + commentSize + ", likeSize=" + likeSize + ", tags=" + tags

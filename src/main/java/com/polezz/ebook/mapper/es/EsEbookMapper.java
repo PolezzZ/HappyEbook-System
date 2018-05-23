@@ -27,14 +27,12 @@ public interface EsEbookMapper
      * 
      * @param title
      * @param Summary
-     * @param content
      * @param tags
      * @param pageable
      * @return
      */
-    Page<EsEbook> findDistinctEsEbookByTitleContainingOrSummaryContainingOrContentContainingOrTagsContaining(
-            String title, String Summary, String content, String tags,
-            Pageable pageable);
+    Page<EsEbook> findDistinctEsEbookByTitleContainingOrSummaryContainingOrTagsContaining(
+            String title, String Summary, String tags, Pageable pageable);
 
     EsEbook findByEbookId(Long ebookId);
 }

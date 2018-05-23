@@ -80,7 +80,7 @@ public class EsEbookServiceImpl implements EsEbookService {
             pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
  
-        pages = esEbookMapper.findDistinctEsEbookByTitleContainingOrSummaryContainingOrContentContainingOrTagsContaining(keyword,keyword,keyword,keyword, pageable);
+        pages = esEbookMapper.findDistinctEsEbookByTitleContainingOrSummaryContainingOrTagsContaining(keyword,keyword,keyword, pageable);
  
         return pages;
     }
@@ -93,7 +93,7 @@ public class EsEbookServiceImpl implements EsEbookService {
             pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
  
-        return esEbookMapper.findDistinctEsEbookByTitleContainingOrSummaryContainingOrContentContainingOrTagsContaining(keyword, keyword, keyword, keyword, pageable);
+        return esEbookMapper.findDistinctEsEbookByTitleContainingOrSummaryContainingOrTagsContaining(keyword, keyword, keyword, pageable);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class EsEbookServiceImpl implements EsEbookService {
      */
     @Override
     public List<EsEbook> listTop5NewestEsEbooks() {
-        Page<EsEbook> page = this.listHotestEsEbooks(EMPTY_KEYWORD, TOP_5_PAGEABLE);
+        Page<EsEbook> page = this.listNewestEsEbooks(EMPTY_KEYWORD, TOP_5_PAGEABLE);
         return page.getContent();
     }
     

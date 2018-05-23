@@ -77,7 +77,6 @@ $(function() {
 		    	"title": $('#title').val(), 
 		    	"summary": $('#summary').val() , 
 		    	"fileName": $('#fileName').val(), 
-		    	"content": $('#md').val(), 
 		    	"catalog":{"id":$('#catalogSelect').val()},
 		    	"tags":$('.form-control-tag').val()
 		    	}),

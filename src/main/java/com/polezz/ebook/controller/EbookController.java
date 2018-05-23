@@ -46,6 +46,9 @@ public class EbookController {
             @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             Model model) {
+        if (keyword != null) {
+            keyword.replaceAll(" ", "");
+        }
         Page<EsEbook> page = null;
         List<EsEbook> list = null;
         boolean isEmpty = true; // 系统初始化时，没有博客数据

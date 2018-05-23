@@ -39,8 +39,6 @@ public class EsEbook implements Serializable {
 
     private String summary;
 
-    private String content;
-
     @Field(index = FieldIndex.not_analyzed) // 不做全文检索字段
     private String username;
     @Field(index = FieldIndex.not_analyzed) // 不做全文检索字段
@@ -60,19 +58,17 @@ public class EsEbook implements Serializable {
     protected EsEbook() { // JPA 的规范要求无参构造函数；设为 protected 防止直接使用
     }
 
-    public EsEbook(String title, String content) {
+    public EsEbook(String title) {
         this.title = title;
-        this.content = content;
     }
 
-    public EsEbook(Long ebookId, String title, String summary, String content,
-            String username, String avatar, Timestamp createTime,
-            Integer readSize, Integer commentSize, Integer likeSize,
-            String fileName, String tags) {
+    public EsEbook(Long ebookId, String title, String summary, String username,
+            String avatar, Timestamp createTime, Integer readSize,
+            Integer commentSize, Integer likeSize, String fileName,
+            String tags) {
         this.ebookId = ebookId;
         this.title = title;
         this.summary = summary;
-        this.content = content;
         this.username = username;
         this.avatar = avatar;
         this.createTime = createTime;
@@ -87,7 +83,6 @@ public class EsEbook implements Serializable {
         this.ebookId = ebook.getId();
         this.title = ebook.getTitle();
         this.summary = ebook.getSummary();
-        this.content = ebook.getContent();
         this.username = ebook.getUser().getUsername();
         this.avatar = ebook.getUser().getAvatar();
         this.createTime = ebook.getCreateTime();
@@ -102,7 +97,6 @@ public class EsEbook implements Serializable {
         this.ebookId = ebook.getId();
         this.title = ebook.getTitle();
         this.summary = ebook.getSummary();
-        this.content = ebook.getContent();
         this.username = ebook.getUser().getUsername();
         this.avatar = ebook.getUser().getAvatar();
         this.createTime = ebook.getCreateTime();
@@ -134,14 +128,6 @@ public class EsEbook implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getSummary() {
@@ -218,7 +204,6 @@ public class EsEbook implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("User[id=%d, title='%s', content='%s']", ebookId,
-                title, content);
+        return String.format("User[id=%d, title='%s']", ebookId, title);
     }
 }

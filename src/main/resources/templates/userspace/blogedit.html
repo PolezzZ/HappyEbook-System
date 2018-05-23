@@ -16,7 +16,7 @@
  
 </style>
 <!-- Page Content -->
-<div class="container blog-content-container">
+<div class="container blog-content-container" style="background:#F5F5DC;">
 
     <div class="row">
 
@@ -27,14 +27,12 @@
             <div class="card mb-4">
                 <div class="card-block" th:object="${ebookModel.ebook}">
                     <input type="hidden" name="id" th:value="*{id}" id="ebookId">
-                    <input  type="text" class="form-control" placeholder="请填写博客标题"  id="title" name="title"  th:value="*{title}"  maxlength="50">
-                    
-                    <textarea class="blog-textarea" placeholder="请填写博客摘要"  id="summary" name="summary"  th:text="*{summary}" maxlength="300"></textarea>
-
+                    <input  type="text" class="form-control" placeholder="请填写电子书标题"  id="title" name="title"  th:value="*{title}"  maxlength="50">
                     <hr>
-                    <textarea id="md" data-provide="markdown" data-hidden-buttons="cmdImage" name="content"  th:text="*{content}"></textarea>
-
                     <hr>
+                    <hr>
+                    <textarea class="blog-summary-textarea" placeholder="请填写电子书摘要"  id="summary" name="summary"  th:text="*{summary}" maxlength="300"></textarea>
+
                 </div>
 
             </div>
@@ -46,7 +44,7 @@
  
                 <!-- 文章目录 -->
                 <div class="card ">
-                    <h5 class="card-header"><i class="fa fa-file-image-o" aria-hidden="true"></i> 图片上传</h5>
+                    <h5 class="card-header"><i class="fa fa-file-image-o" aria-hidden="true"></i> 电子书上传</h5>
                     <div class="card-block">
                         <div class="row mt-1">
                              <div  class="col-lg-12">
@@ -54,7 +52,7 @@
                                 
                                     <form  enctype="multipart/form-data"  id="uploadformid"  >
                                     <input type="file" name="file" accept="image/png,image/gif,image/jpeg" id="file">
-                                    <button class="btn btn-primary float-right"  type="button" id="uploadImage" >插入</button>
+                                    <button class="btn btn-primary float-right"  type="button" id="uploadImage" >上传</button>
                                     </form>
                                     <p id="uploadStatus" style="display:none">电子书上传成功，请发布。</p>
                                     <input type="hidden" id="fileName" >
@@ -65,7 +63,7 @@
                 </div>
                 <!-- 图片上传 -->
                 <div class="card ">
-                    <h5 class="card-header"><i class="fa fa-cog" aria-hidden="true"></i> 博客设置</h5>
+                    <h5 class="card-header"><i class="fa fa-cog" aria-hidden="true"></i> 电子书设置</h5>
                     <div class="card-block">
                         <div class="row mt-1">
                             <div  class="col-lg-12">

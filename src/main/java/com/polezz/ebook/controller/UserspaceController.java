@@ -7,14 +7,10 @@
  */
 package com.polezz.ebook.controller;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,6 +162,9 @@ public class UserspaceController {
             @RequestParam(value = "pageIndex", required = false, defaultValue = "0") int pageIndex,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             Model model) {
+        if (keyword != null) {
+            keyword.replaceAll(" ", "");
+        }
         User user = (User) userDetailsService.loadUserByUsername(username);
 
         Page<Ebook> page = null;
@@ -177,8 +176,8 @@ public class UserspaceController {
             page = ebookService.listEbooksByCatalog(catalog, pageable);
             order = "";
         } else if (order.equals("hot")) {
-            Sort sort = new Sort(Direction.DESC, "commentSize", "likeSize",
-                    "readSize");
+            Sort sort = new Sort(Direction.DESC, "readSize", "likeSize",
+                    "commentSize");
             Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
             page = ebookService.listEbooksByTitleVoteAndSort(user, keyword,
                     pageable);
@@ -284,7 +283,7 @@ public class UserspaceController {
             Model model) {
         User user = (User) userDetailsService.loadUserByUsername(username);
         List<Catalog> catalogs = catalogService.listCatalogs(user);
-        model.addAttribute("ebook", new Ebook(null, null, null));
+        model.addAttribute("ebook", new Ebook(null, null));
         model.addAttribute("catalogs", catalogs);
         return new ModelAndView("/userspace/blogedit", "ebookModel", model);
     }
@@ -309,7 +308,7 @@ public class UserspaceController {
      * 保存电子书
      * 
      * @param username
-     * @param blog
+     * @param ebook
      * @return
      */
     @PostMapping("/{username}/ebooks/edit")
@@ -326,7 +325,6 @@ public class UserspaceController {
             if (ebook.getId() != null) {
                 Ebook orignalEbook = ebookService.getEbookById(ebook.getId());
                 orignalEbook.setTitle(ebook.getTitle());
-                orignalEbook.setContent(ebook.getContent());
                 orignalEbook.setSummary(ebook.getSummary());
                 orignalEbook.setCatalog(ebook.getCatalog());
                 if (ebook.getFileName() != "") {
@@ -357,7 +355,7 @@ public class UserspaceController {
      * 保存电子书文件
      * 
      * @param username
-     * @param blog
+     * @param ebook
      * @return
      */
     @PostMapping("/upload")
